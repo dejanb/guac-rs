@@ -68,33 +68,31 @@ jobs:
               exit 1
           fi
 
-  build:
-    name: Build
-    runs-on: ${{ matrix.os }}
-    needs:
-      - init
-      - ensure-version
+  # build:
+  #   name: Build
+  #   runs-on: ubuntu-22.04
+  #   needs:
+  #     - init
+  #     - ensure-version
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - run: mkdir -p upload
+  #     - run: mkdir -p upload
 
-      - name: Archive (zip)
-        if: matrix.archive == 'zip'
-        working-directory: pack
-        run: |
-          7z a ../upload/${{ env.dirname }}.zip .
+  #     - name: Archive (zip)
+  #       working-directory: pack
+  #       run: |
+  #         7z a ../upload/${{ env.dirname }}.zip .
 
-      - name: Archive (tar.gz)
-        if: matrix.archive != 'zip'
-        working-directory: pack
-        run: |
-          tar czvf ../upload/${{ env.dirname }}.tar.gz .
+  #     - name: Archive (tar.gz)
+  #       working-directory: pack
+  #       run: |
+  #         tar czvf ../upload/${{ env.dirname }}.tar.gz .
 
   publish:
-    needs: [ init, build ]
+    needs: [ init, ensure-version ]
     runs-on: ubuntu-22.04
 
     permissions:
