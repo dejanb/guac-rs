@@ -85,6 +85,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install convco
+        run: |
+          curl -sLO https://github.com/convco/convco/releases/download/v0.5.1/convco-ubuntu.zip
+          unzip convco-ubuntu.zip
+          sudo install convco /usr/local/bin
+
+      - name: Generate changelog
+        run: |
+          convco changelog -s --max-majors=1 --max-minors=1 --max-patches=1 -n > /tmp/changelog.md
+
+
       # Final step, create the GitHub release, attaching the files
       - name: Create Release
         env:
