@@ -68,29 +68,6 @@ jobs:
               exit 1
           fi
 
-  # build:
-  #   name: Build
-  #   runs-on: ubuntu-22.04
-  #   needs:
-  #     - init
-  #     - ensure-version
-
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-
-  #     - run: mkdir -p upload
-
-  #     - name: Archive (zip)
-  #       working-directory: pack
-  #       run: |
-  #         7z a ../upload/${{ env.dirname }}.zip .
-
-  #     - name: Archive (tar.gz)
-  #       working-directory: pack
-  #       run: |
-  #         tar czvf ../upload/${{ env.dirname }}.tar.gz .
-
   publish:
     needs: [ init, ensure-version ]
     runs-on: ubuntu-22.04
@@ -107,35 +84,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Install convco
-        run: |
-          curl -sLO https://github.com/convco/convco/releases/download/v0.5.1/convco-ubuntu.zip
-          unzip convco-ubuntu.zip
-          sudo install convco /usr/local/bin
-
-      - name: Generate changelog
-        run: |
-          convco changelog -s --max-majors=1 --max-minors=1 --max-patches=1 -n > /tmp/changelog.md
-
-      - uses: actions/download-artifact@v4
-        with:
-          path: ${{ github.workspace }}/download
-
-      - name: Display downloaded content
-        run: ls -R ${{ github.workspace }}/download
-
-      - name: Stage release
-        run: |
-          mkdir -p staging
-          cp -pv ${{ github.workspace }}/download/*/* staging/
-
-      - name: Display staging area
-        run: ls -R staging
-
-      - uses: actions/attest-build-provenance@v1
-        with:
-          subject-path: 'staging/*'
 
       # Final step, create the GitHub release, attaching the files
       - name: Create Release
